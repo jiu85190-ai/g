@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 
-FILE_PATH = "/content/drive/MyDrive/Crop_recommendation.csv"
+FILE_PATH = "Crop_recommendation.csv"
 
 st.set_page_config(
     page_title="온도 구간별 최적 작물 추천",
@@ -74,5 +74,6 @@ if df is not None:
     fig_best.update_layout(uniformtext_minsize=8, uniformtext_mode='hide')
 
     fig_best.update_xaxes(categoryorder="array", categoryarray=bin_labels)
+
 
     st.plotly_chart(fig_best, use_container_width=True)
