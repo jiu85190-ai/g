@@ -5,7 +5,7 @@ import plotly.express as px
 # ---------------------------------------------
 # 1. 파일 경로 설정 (사용자 환경에 맞게 유지)
 # ---------------------------------------------
-FILE_PATH = "/content/drive/MyDrive/Crop_recommendation.csv"
+FILE_PATH = "Crop_recommendation.csv"
 
 # ---------------------------------------------
 # 2. 페이지 설정
@@ -246,3 +246,4 @@ if df is not None:
     fig_best.update_xaxes(categoryorder="array", categoryarray=bin_labels)
     st.plotly_chart(fig_best, use_container_width=True)
 """)
+
