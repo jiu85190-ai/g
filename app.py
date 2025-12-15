@@ -50,7 +50,24 @@ def load_data(file_path):
         if removed_outliers > 0:
             st.sidebar.warning(f"🌡️ 온도 이상치 제거: {removed_outliers}개 행 제거됨.")
         
-        return df
+        # --- 정규화 (Min-Max Normalization) ---
+        # 정규화 대상이 되는 수치형 변수들을 목록으로 만듭니다.
+        numerical_features = ['N', 'P', 'K', 'temperature', 'humidity', 'ph', 'rainfall']
+        
+        # 정규화 결과를 저장할 새로운 DataFrame을 만듭니다.
+        df_normalized = df.copy()
+        
+        # 각 수치형 변수에 대해 Min-Max 정규화를 적용합니다.
+        for col in numerical_features:
+            min_val = df_normalized[col].min()
+            max_val = df_normalized[col].max()
+            
+            # 정규화 공식: (현재 값 - 최소값) / (최대값 - 최소값)
+            df_normalized[col + '_normalized'] = (df_normalized[col] - min_val) / (max_val - min_val)
+
+        # st.sidebar.info("데이터의 수치형 변수들이 0-1 범위로 정규화되었습니다.") 
+
+        return df_normalized  # 정규화된 데이터프레임 반환
     except FileNotFoundError:
         st.error(f"오류: '{file_path}' 파일을 찾을 수 없습니다. 경로를 확인해주세요.")
         return None
@@ -154,7 +171,7 @@ if df is not None:
 st.subheader("📜 구현 코드")
 
 # 코드만 보여주는 칸을 만들기 위해 `st.code()` 사용
-st.code("""
+st.code("
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -179,22 +196,4 @@ def load_data(file_path):
         st.sidebar.info(f"데이터셋 로드 완료: {initial_rows}행 -> 결측치 제거 후 {len(df)}행")
         
         # 이상치 처리 (IQR 방법)
-        Q1 = df['temperature'].quantile(0.25)
-        Q3 = df['temperature'].quantile(0.75)
-        IQR = Q3 - Q1
-        lower_bound = Q1 - 1.5 * IQR
-        upper_bound = Q3 + 1.5 * IQR
-        initial_rows_with_outliers = len(df)
-        df = df[(df['temperature'] >= lower_bound) & (df['temperature'] <= upper_bound)]
-        
-        removed_outliers = initial_rows_with_outliers - len(df)
-        if removed_outliers > 0:
-            st.sidebar.warning(f"🌡️ 온도 이상치 제거: {removed_outliers}개 행 제거됨.")
-        
-        return df
-    except FileNotFoundError:
-        st.error(f"오류: '{file_path}' 파일을 찾을 수 없습니다. 경로를 확인해주세요.")
-        return None
-
-st.title("🌱 온도 구간별 최적 작물 추천 분석")
-st.markdown("전체 작물 빈도 대신, **각 온도 구간별로 추천 빈도가 가장 높은(최적) 작물 하나**만 분석하여 추천
+        Q1 = df['temperature'].quant
